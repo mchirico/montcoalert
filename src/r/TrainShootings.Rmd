@@ -3,11 +3,15 @@ title: "TrainShootings"
 author: "Mike Chirico"
 date: "February 12, 2016"
 output: html_document
+source: https://github.com/mchirico/montcoalert/blob/master/src/r/TrainShootings.Rmd
+
 ---
 
 
 
 ```{r}
+# Git Location of this file:
+# https://github.com/mchirico/montcoalert/blob/master/src/r/TrainShootings.Rmd
 # Load some standard libraries
 suppressMessages(library(dplyr))
 library(ggplot2)
@@ -57,11 +61,105 @@ dd=d[d$title %in% tt,]
 counts <- summarise(group_by(dd, title), Counts=length(title))
 counts <- counts[order(-counts$Counts),]
 counts
+
+# Convert all data to csv, to view in Excel
+
+write.csv(dd, file = "TrainShootingEtc.csv")
+
+# Looking to map the data
+map <- qmap(c(lon = -75.222372,lat = 40.156019), color="bw", fill = FALSE, add = TRUE,zoom = 11,legend = 'top')
+map
+# Redo the selection - You may want to add or delete
+tt=c('EMS: POISONING','EMS: SHOOTING','EMS: AMPUTATION','EMS: STABBING','EMS: TRAIN CRASH')
+
+# Resetting
+dd=d[d$title %in% tt,]
+
+# You might want to verify 
+length(tt)
+tt[which(tt=="EMS: POISONING")]
+
+
+map +
+     geom_point(data=d[d$title==tt[1],], aes(x=lng, y=lat) 
+                          , alpha=1, size=4.3,col='red',
+                position=position_jitter(w = 0.0009, h = 0.0009)
+                ) + 
+  geom_point(data=d[d$title==tt[2],], aes(x=lng, y=lat) 
+                          , alpha=1, size=4.3,col='blue',
+                position=position_jitter(w = 0.0009, h = 0.0009)
+                ) +
+  geom_point(data=d[d$title==tt[3],], aes(x=lng, y=lat) 
+                          , alpha=1, size=4.3,col='green',
+                position=position_jitter(w = 0.0009, h = 0.0009)
+                ) +
+  geom_point(data=d[d$title==tt[4],], aes(x=lng, y=lat) 
+                          , alpha=1, size=4.3,col='yellow',
+                position=position_jitter(w = 0.0009, h = 0.0009)
+                ) +
+  geom_point(data=d[d$title==tt[5],], aes(x=lng, y=lat) 
+                          , alpha=1, size=4.3,col='black',
+                position=position_jitter(w = 0.0009, h = 0.0009)
+                )
+
+# Look at the data by township/boro
+# Just shooting and stabbing
+tt=c('EMS: SHOOTING','EMS: STABBING')
+
+# Resetting
+dd=d[d$title %in% tt,]
+
+counts <- summarise(group_by(dd,twp, title), Counts=length(title))
+counts <- counts[order(-counts$Counts),]
+counts
+
+# Break it down by month
+dd$month = month(dd$mdate)
+dd
+
+# Break it down by month
+d$month = month(d$mdate)
+d$weekdays = weekdays(d$mdate)
+d$weekdays
+
+
+# Add another category, and ask the question: What's the most
+# dangerous township to be in, and what day of the week are
+# most of the crimes?
+
+# Break it down by wday 1=Sun,2=Mon..7=Sat
+d$wday = wday(d$mdate)
+
+tt=c('EMS: SHOOTING','EMS: STABBING','EMS: ASSAULT VICTIM')
+#tt=c('EMS: STABBING')
+
+# Resetting
+dd=d[d$title %in% tt,]
+dd
+
+counts <- summarise(group_by(dd,wday,twp, title), Counts=length(title))
+counts <- counts[order(-counts$Counts),]
+colnames(counts) <- c("tunit","twp","title","Counts")
+counts
+
+
+
+# Playing around with displays
+ggplot(data=counts, aes(x=tunit, y=Counts, group = twp, colour = title)) +
+    geom_line() +
+    geom_point( size=9, shape=18, fill="white") +
+    facet_wrap( "twp" ) +
+   ggtitle("Shootings,Stabbings,Assults\n(since beg 2016)") +
+  labs(x="Weekday 1=Sun,2=Mon...4=Wed..6=Fri.",y="Counts",colour="Category") 
+
+file='/Users/mchirico/dev/github/montcoalert/img/stabW0.png'
+ggsave(file,width=480, height=240, res=120)
+
 ```
 
-You can also embed plots, for example:
+
 
 ```{r}
-plot(cars)
+# plot(cars)
 ```
 
