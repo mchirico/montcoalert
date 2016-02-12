@@ -1,0 +1,67 @@
+---
+title: "TrainShootings"
+author: "Mike Chirico"
+date: "February 12, 2016"
+output: html_document
+---
+
+
+
+```{r}
+# Load some standard libraries
+suppressMessages(library(dplyr))
+library(ggplot2)
+library(tidyr)
+library(ggmap)
+library(readr)
+library(lubridate)
+library(reshape2)
+library(animation)
+library(scales)
+
+# Grab the most recent data
+urlLink="https://storage.googleapis.com/montco-stats/tzr.csv"
+d=read.csv(url(urlLink),header=TRUE,stringsAsFactors=FALSE)
+wd<-function(x) as.POSIXct(strptime(x, '%Y-%m-%d %H:%M:%S',tz='EST'))
+
+
+# Some functions used
+epoch<-function(x) strftime(x, format = "%s", tz = 'EST')
+epocht<- function(x) as.integer(strtoi(x)/600)*600
+epoch10<-  function(x) as.POSIXct(strptime(x, '%s',tz='EST'))
+wdhr<-function(x) as.POSIXct(strptime(x, '%Y-%m-%d %H:%M:%S',tz='EST'))
+
+# Let's add a few fields
+d$mdate=wd(d$timeStamp)
+d$epoch=epoch(d$timeStamp)
+d$epoch10=epoch10(epocht(epoch(d$timeStamp)))
+
+d$hr=format(d$mdate, format="%Y-%m-%d %H:00:00")
+d$day=format(d$mdate, format="%Y-%m-%d 00:00:00")
+
+# We only want data from this year
+d=d[d$mdate >= '2016-01-01 00:00:00',]
+
+# Let's get some counts. This is everything. We'll
+# narrow it down in a minute
+counts <- summarise(group_by(d, title), Counts=length(title))
+counts <- counts[order(-counts$Counts),]
+counts
+
+# Get a subset of the data and store it as dd
+tt=c('EMS: POISONING','EMS: SHOOTING','EMS: AMPUTATION','EMS: STABBING','EMS: TRAIN CRASH','Fire: TRAIN CRASH')
+
+dd=d[d$title %in% tt,]
+
+# Now get our subset of data
+counts <- summarise(group_by(dd, title), Counts=length(title))
+counts <- counts[order(-counts$Counts),]
+counts
+```
+
+You can also embed plots, for example:
+
+```{r}
+plot(cars)
+```
+
