@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# src: 
+# src: https://github.com/mchirico/montcoalert/blob/master/src/python/vomit.py
 
 
 import requests
@@ -60,7 +60,9 @@ print vomit50.tail()
 print "\n\nStats on 50hr"
 print "Max: %d Mean:% 6.2f Median:% 6.2f" % (vomit50.max(),vomit50.mean(),vomit50.median())
 s="Quantiles: 25%,   50%,  75%,   90%\n"
-s+="         % 6.2f % 6.2f % 6.2f % 6.2f" % (vomit50.quantile(0.25),vomit50.quantile(0.50),vomit50.quantile(0.75),vomit50.quantile(0.9))
+s+="         % 6.2f % 6.2f % 6.2f % 6.2f" % (vomit50.quantile(0.25),
+                                             vomit50.quantile(0.50),
+                                             vomit50.quantile(0.75),vomit50.quantile(0.9))
 print s
 
 vomit50.plot()
