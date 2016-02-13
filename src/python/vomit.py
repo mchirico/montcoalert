@@ -1,6 +1,19 @@
 #!/usr/bin/env python
-# src: https://github.com/mchirico/montcoalert/blob/master/src/python/vomit.py
+"""
+  src: https://github.com/mchirico/montcoalert/raw/master/src/python/vomit.py
 
+  You can run this on cloud9
+
+    Install Anaconda:
+      
+      Step 1:
+
+        Get the latest version of Anaconda2
+         $ wget https://repo.continuum.io/archive/Anaconda2-2.5.0-Linux-x86_64.sh
+         $ bash ./wget https://repo.continuum.io/archive/Anaconda2-2.5.0-Linux-x86_64.sh
+  
+  
+"""
 
 import requests
 import pandas as pd
@@ -65,8 +78,9 @@ s+="         % 6.2f % 6.2f % 6.2f % 6.2f" % (vomit50.quantile(0.25),
                                              vomit50.quantile(0.75),vomit50.quantile(0.9))
 print s
 
-vomit50.plot()
-plt.savefig('vomit50.png', bbox_inches='tight')
+#  If you want to see the display
+#  vomit50.plot()
+#  plt.savefig('vomit50.png', bbox_inches='tight')
 
 """
   Now we get the following
