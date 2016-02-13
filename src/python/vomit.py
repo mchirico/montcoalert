@@ -86,14 +86,28 @@ plt.savefig('vomit50.png', bbox_inches='tight')
 """
 
 
-
-
-
-
-
 # Group by title and township
 g = d.groupby(['title','twp'])
 
 # Look at the data every 100 hours. Note 60T = 1hr, 60*100=6000
 k100=g['e'].resample('6000T', how=[np.sum,np.mean,np.median, len])
 k100.fillna(0, inplace=True)
+
+# Create pivot table
+# Start with the group we want
+d.timeStamp=pd.DatetimeIndex(d.timeStamp)
+tz=d[(d.title == 'EMS: NAUSEA/VOMITING')]
+
+tz.index=pd.DatetimeIndex(tz.timeStamp)
+#tz.index=pd.DatetimeIndex(tz.timeStamp)
+
+
+
+p=pd.pivot_table(tz, values='e', index=['timeStamp'], columns=['twp'], aggfunc=np.sum)
+#j=p.resample('4D',how='sum', fill_method='pad')
+j=p.resample('72H',how='sum', fill_method='pad')
+j.fillna(0, inplace=True)
+
+j.index=j.index-pd.offsets.Hour(j.index.min().hour) - pd.offsets.Minute(j.index.min().minute) -pd.offsets.Second(j.index.min().second)
+j.to_csv('vomitPivot.csv',index=True,header=True)
+
