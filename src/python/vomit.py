@@ -132,8 +132,8 @@ def createPivot(title='EMS: NAUSEA/VOMITING',hr='72H'):
   j.index=j.index-pd.offsets.Hour(j.index.min().hour) - pd.offsets.Minute(j.index.min().minute) -pd.offsets.Second(j.index.min().second)
   j.to_csv(file,index=True,header=True)
 
-createPivot(title='EMS: NAUSEA/VOMITING')
-createPivot(title='EMS: ABDOMINAL PAINS')
+createPivot(title='EMS: NAUSEA/VOMITING',hr='100H')
+createPivot(title='EMS: ABDOMINAL PAINS',hr='100H')
 
 
 
