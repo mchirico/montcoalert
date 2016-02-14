@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
   src: https://github.com/mchirico/montcoalert/raw/master/src/python/vomit.py
-
-  You can run this on cloud9
+   You can run this on cloud9
+   wget https://github.com/mchirico/montcoalert/raw/master/src/python/vomit.py
 
     Install Anaconda:
       
@@ -72,10 +72,12 @@ vomit50.to_csv('vomit50hr.csv',index=True,header=True)
 print vomit50.tail()
 print "\n\nStats on 50hr"
 print "Max: %d Mean:% 6.2f Median:% 6.2f" % (vomit50.max(),vomit50.mean(),vomit50.median())
-s="Quantiles: 25%,   50%,  75%,   90%\n"
-s+="         % 6.2f % 6.2f % 6.2f % 6.2f" % (vomit50.quantile(0.25),
+s="Quantiles: 25%,   50%,  75%,   90%    100%\n"
+s+="         % 6.2f % 6.2f % 6.2f % 6.2f % 6.2f" % (vomit50.quantile(0.25),
                                              vomit50.quantile(0.50),
-                                             vomit50.quantile(0.75),vomit50.quantile(0.9))
+                                                    vomit50.quantile(0.75),
+                                                    vomit50.quantile(0.9),
+                                                    vomit50.quantile(1))
 print s
 
 #  If you want to see the display
@@ -120,11 +122,10 @@ def createPivot(title='EMS: NAUSEA/VOMITING',hr='72H'):
   d.timeStamp=pd.DatetimeIndex(d.timeStamp)
   tz=d[(d.title == title)]
   tz.index=pd.DatetimeIndex(tz.timeStamp)
-  tz[(tz.title=='EMS: ABDOMINAL PAINS') & (tz.twp=='CHELTENHAM')]
+#  tz[(tz.title=='EMS: ABDOMINAL PAINS') & (tz.twp=='CHELTENHAM')]
   p=pd.pivot_table(tz, values='e', index=['timeStamp'], columns=['twp'], aggfunc=np.sum)
   # Make sure you don't do this
   #j=p.resample('4D',how='sum', fill_method='pad')
-  j=p.resample(hr,how='sum', fill_method='pad')
   j=p.resample(hr,how='sum')
   j.fillna(0, inplace=True)
   s=title.replace(' ','_').replace('/','_').replace(' ','_').replace(':','_')
