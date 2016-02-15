@@ -20,12 +20,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import io
 import numpy as np
+import datetime
 
 # Read in the data
-url="https://storage.googleapis.com/montco-stats/tz.csv"
-d=requests.get(url).content
-d=pd.read_csv(io.StringIO(d.decode('utf-8')))
-d=pd.DataFrame(d)
+def readTZ():
+    url="https://storage.googleapis.com/montco-stats/tz.csv"
+    d=requests.get(url).content
+    d=pd.read_csv(io.StringIO(d.decode('utf-8')),header=0,names=['lat', 'lng','desc','zip','title','timeStamp','twp','e'],
+            dtype={'lat':str,'lng':str,'desc':str,'zip':str,'title':str,'timeStamp':datetime.datetime,'twp':str,'e':int})
+    d=pd.DataFrame(d)
+    return d
+
+d=readTZ()
+
 
 # Set index
 d.index = pd.DatetimeIndex(d.timeStamp)
