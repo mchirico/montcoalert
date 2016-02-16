@@ -26,8 +26,10 @@ import datetime
 def readTZ():
     url="https://storage.googleapis.com/montco-stats/tz.csv"
     d=requests.get(url).content
-    d=pd.read_csv(io.StringIO(d.decode('utf-8')),header=0,names=['lat', 'lng','desc','zip','title','timeStamp','twp','e'],
-            dtype={'lat':str,'lng':str,'desc':str,'zip':str,'title':str,'timeStamp':datetime.datetime,'twp':str,'e':int})
+    d=pd.read_csv(io.StringIO(d.decode('utf-8')),
+                  header=0,names=['lat', 'lng','desc','zip','title','timeStamp','twp','e'],
+            dtype={'lat':str,'lng':str,'desc':str,'zip':str,
+                  'title':str,'timeStamp':datetime.datetime,'twp':str,'e':int})
     d=pd.DataFrame(d)
     return d
 
